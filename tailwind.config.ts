@@ -31,6 +31,14 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -80,10 +88,46 @@ export default {
             height: "0",
           },
         },
+        "pulse-vital": {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.05)", opacity: "0.8" },
+        },
+        "ecg-wave": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+        "scan-line": {
+          "0%": { transform: "translateY(-100%)", opacity: "0" },
+          "50%": { opacity: "1" },
+          "100%": { transform: "translateY(100%)", opacity: "0" },
+        },
+        "data-flow": {
+          "0%": { transform: "translateX(-20px)", opacity: "0" },
+          "50%": { opacity: "1" },
+          "100%": { transform: "translateX(20px)", opacity: "0" },
+        },
+        "progress-fill": {
+          "0%": { width: "0%" },
+          "100%": { width: "100%" },
+        },
+        "check-draw": {
+          "to": { strokeDashoffset: "0" },
+        },
+        "glow-pulse": {
+          "0%, 100%": { filter: "brightness(1)" },
+          "50%": { filter: "brightness(1.2)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-vital": "pulse-vital 2s ease-in-out infinite",
+        "ecg-wave": "ecg-wave 1.5s linear infinite",
+        "scan-line": "scan-line 3s ease-in-out infinite",
+        "data-flow": "data-flow 2s ease-in-out infinite",
+        "progress-fill": "progress-fill 2s ease-out forwards",
+        "check-draw": "check-draw 0.5s ease-out forwards",
+        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
       },
     },
   },

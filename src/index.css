@@ -2,41 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Futuristic Medical Emergency Dashboard 2035 Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Medical Emergency Palette - 2035 */
+    --background: 222 84% 4%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 222 50% 8%;
+    --card-foreground: 210 40% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 222 60% 6%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 213 94% 68%;
+    --primary-foreground: 222 84% 4.9%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 197 71% 52%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 222 30% 15%;
+    --muted-foreground: 210 20% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 142 76% 56%;
+    --accent-foreground: 222 84% 4%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 222 84% 4%;
 
-    --radius: 0.5rem;
+    --success: 142 76% 56%;
+    --success-foreground: 222 84% 4%;
+
+    --border: 222 30% 18%;
+    --input: 222 30% 18%;
+    --ring: 213 94% 68%;
+
+    --radius: 0.75rem;
+
+    /* Medical Gradients */
+    --gradient-medical: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+    --gradient-vital: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 100%);
+    --gradient-alert: linear-gradient(135deg, hsl(var(--warning)) 0%, hsl(var(--destructive)) 100%);
+    --gradient-scan: linear-gradient(45deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--accent) / 0.1) 100%);
+
+    /* Medical Shadows & Glows */
+    --shadow-medical: 0 4px 20px hsl(var(--primary) / 0.3);
+    --shadow-vital: 0 0 30px hsl(var(--accent) / 0.4);
+    --shadow-alert: 0 0 25px hsl(var(--destructive) / 0.5);
+    --glow-primary: 0 0 20px hsl(var(--primary) / 0.6);
+    --glow-success: 0 0 15px hsl(var(--success) / 0.7);
+
+    /* Animation Durations */
+    --transition-medical: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-vital: all 0.15s ease-out;
+    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
     --sidebar-background: 0 0% 98%;
 
@@ -94,12 +117,104 @@ All colors MUST be HSL.
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
+/* Medical Animation Keyframes */
+@keyframes pulse-vital {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
 
-  body {
-    @apply bg-background text-foreground;
+@keyframes ecg-wave {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+@keyframes data-flow {
+  0% { transform: translateX(-20px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(20px); opacity: 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: var(--glow-primary); }
+  50% { box-shadow: var(--glow-success); }
+}
+
+@keyframes progress-fill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+@keyframes check-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Component Styles */
+@layer components {
+  .medical-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg;
+    background: linear-gradient(135deg, hsl(var(--card) / 0.8) 0%, hsl(var(--card) / 0.6) 100%);
+    transition: var(--transition-medical);
+  }
+  
+  .medical-card:hover {
+    @apply border-primary/50;
+    box-shadow: var(--shadow-medical);
+  }
+  
+  .vital-display {
+    @apply relative overflow-hidden;
+    background: var(--gradient-vital);
+    animation: pulse-vital 2s ease-in-out infinite;
+  }
+  
+  .vital-display:hover {
+    box-shadow: var(--shadow-vital);
+  }
+  
+  .ecg-line {
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(90deg, transparent 40%, hsl(var(--accent)) 50%, transparent 60%);
+    animation: ecg-wave 1.5s linear infinite;
+  }
+  
+  .scan-grid {
+    @apply relative overflow-hidden;
+    background: var(--gradient-scan);
+  }
+  
+  .scan-grid::before {
+    content: '';
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(0deg, transparent 40%, hsl(var(--primary) / 0.5) 50%, transparent 60%);
+    animation: scan-line 3s ease-in-out infinite;
+  }
+  
+  .progress-medical {
+    @apply relative overflow-hidden bg-muted/30 rounded-full;
+  }
+  
+  .progress-medical .progress-fill {
+    @apply h-full bg-gradient-to-r from-accent to-primary rounded-full;
+    animation: progress-fill 2s ease-out forwards;
+  }
+  
+  .timeline-event {
+    @apply relative;
+    transition: var(--transition-smooth);
+  }
+  
+  .timeline-event.active {
+    box-shadow: var(--glow-success);
+  }
+  
+  .data-particle {
+    @apply absolute w-1 h-1 bg-primary rounded-full;
+    animation: data-flow 2s ease-in-out infinite;
   }
 }
