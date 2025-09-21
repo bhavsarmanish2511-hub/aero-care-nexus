@@ -41,24 +41,39 @@ const Index = () => {
           </div>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <div className="flex items-center gap-2 text-sm">
             <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
             <span className="text-success">All Systems Operational</span>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Shield className="w-4 h-4 text-primary" />
-            <span>Emergency Protocol</span>
-          </div>
-          <div className="flex items-center gap-1 text-sm">
-            <Zap className="w-4 h-4 text-warning" />
-            <span>Priority 1</span>
+          
+          {/* Patient Information */}
+          <div onClick={() => setActiveModal('patient')} className="cursor-pointer bg-card/50 border border-border/30 rounded-lg p-3 hover:bg-card/70 transition-colors">
+            <h3 className="text-xs font-medium mb-1 text-card-foreground">Patient Info</h3>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+              <div className="flex items-center gap-1">
+                <span className="text-muted-foreground">Age:</span>
+                <span>42M</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-muted-foreground">ID:</span>
+                <span className="text-primary">MED-7842</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-muted-foreground">Type:</span>
+                <span>O-</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-muted-foreground">Status:</span>
+                <span className="text-warning">Critical</span>
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Dashboard Grid */}
-      <div className="h-[calc(100vh-4rem)] p-2 grid grid-cols-6 grid-rows-4 gap-2 overflow-hidden">
+      <div className="h-[calc(100vh-4rem)] p-2 grid grid-cols-8 grid-rows-3 gap-2 overflow-hidden">
         {/* Row 1 */}
         <div className="col-span-2 row-span-1">
           <div onClick={() => setActiveModal('ambulance')} className="cursor-pointer h-full">
@@ -75,57 +90,34 @@ const Index = () => {
             <DataTransmission />
           </div>
         </div>
-
-        {/* Row 2 */}
-        <div className="col-span-3 row-span-2">
-          <RealTimeVitals onVitalClick={setSelectedVital} />
-        </div>
-        <div className="col-span-1 row-span-2">
-          <div onClick={() => setActiveModal('stabilization')} className="cursor-pointer h-full">
-            <PatientStabilization />
-          </div>
-        </div>
         <div className="col-span-2 row-span-1">
           <div onClick={() => setActiveModal('livefeed')} className="cursor-pointer h-full">
             <LiveFeed />
           </div>
         </div>
 
-        {/* Row 3 */}
+        {/* Row 2 */}
+        <div className="col-span-3 row-span-1">
+          <RealTimeVitals onVitalClick={setSelectedVital} />
+        </div>
         <div className="col-span-2 row-span-1">
-          <div onClick={() => setActiveModal('hospital')} className="cursor-pointer h-full">
-            <HospitalCoordination />
+          <div onClick={() => setActiveModal('stabilization')} className="cursor-pointer h-full">
+            <PatientStabilization />
           </div>
         </div>
-
-        {/* Row 4 */}
         <div className="col-span-1 row-span-1">
           <div onClick={() => setActiveModal('workflow')} className="cursor-pointer h-full">
             <WorkflowTimeline />
           </div>
         </div>
         <div className="col-span-2 row-span-1">
-          <div onClick={() => setActiveModal('patient')} className="cursor-pointer h-full">
-            <div className="medical-card h-full p-2">
-              <h3 className="text-xs font-medium mb-2 text-card-foreground">Patient Info</h3>
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Age:</span>
-                  <span>42 years</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Gender:</span>
-                  <span>Male</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">ID:</span>
-                  <span className="text-primary">MED-2035-7842</span>
-                </div>
-              </div>
-            </div>
+          <div onClick={() => setActiveModal('hospital')} className="cursor-pointer h-full">
+            <HospitalCoordination />
           </div>
         </div>
-        <div className="col-span-3 row-span-1">
+
+        {/* Row 3 */}
+        <div className="col-span-8 row-span-1">
           <div onClick={() => setActiveModal('timeline')} className="cursor-pointer h-full">
             <TimelineEvents />
           </div>

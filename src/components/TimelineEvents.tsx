@@ -74,46 +74,53 @@ export const TimelineEvents = () => {
         <h3 className="text-sm font-medium text-card-foreground">Timeline of Events</h3>
       </div>
       
-      <div className="h-[calc(100%-3rem)] overflow-x-auto">
-        <div className="flex gap-3 pb-2 min-w-max">
-          {events.map((event) => {
-            const IconComponent = event.icon;
-            return (
-              <div 
-                key={event.id} 
-                className={`timeline-event flex-shrink-0 w-48 p-3 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getEventColor(event.type)} ${selectedEvent === event.id ? 'ring-2 ring-primary' : ''}`}
-                onClick={() => setSelectedEvent(selectedEvent === event.id ? null : event.id)}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <IconComponent className="w-4 h-4" />
-                  <span className="text-xs font-mono font-medium">{event.time}</span>
-                </div>
-                
-                <div className="text-xs font-medium mb-1 line-clamp-2">
-                  {event.event}
-                </div>
-                
-                <div className={`text-xs capitalize ${event.type === 'success' ? 'text-success' : event.type === 'warning' ? 'text-warning' : event.type === 'critical' ? 'text-destructive' : 'text-primary'}`}>
-                  {event.type}
-                </div>
-                
-                {/* Glow effect for recent events */}
-                {events.indexOf(event) >= events.length - 2 && (
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg -z-10 animate-glow-pulse"></div>
-                )}
+      <div className="grid grid-cols-4 gap-2 h-[calc(100%-3rem)]">
+        {events.slice(0, 4).map((event) => {
+          const IconComponent = event.icon;
+          return (
+            <div 
+              key={event.id} 
+              className={`timeline-event p-2 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getEventColor(event.type)} ${selectedEvent === event.id ? 'ring-2 ring-primary' : ''}`}
+              onClick={() => setSelectedEvent(selectedEvent === event.id ? null : event.id)}
+            >
+              <div className="flex items-center gap-1 mb-1">
+                <IconComponent className="w-3 h-3" />
+                <span className="text-xs font-mono font-medium">{event.time}</span>
               </div>
-            );
-          })}
-        </div>
+              
+              <div className="text-xs font-medium mb-1 line-clamp-2">
+                {event.event}
+              </div>
+              
+              <div className={`text-xs capitalize ${event.type === 'success' ? 'text-success' : event.type === 'warning' ? 'text-warning' : event.type === 'critical' ? 'text-destructive' : 'text-primary'}`}>
+                {event.type}
+              </div>
+              
+              {/* Glow effect for recent events */}
+              {events.indexOf(event) >= events.length - 2 && (
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg -z-10 animate-glow-pulse"></div>
+              )}
+            </div>
+          );
+        })}
+        
+        {/* Show more events indicator */}
+        {events.length > 4 && (
+          <div className="col-span-4 text-center">
+            <div className="text-xs text-muted-foreground">
+              +{events.length - 4} more events • Click for details
+            </div>
+          </div>
+        )}
         
         {/* Event Details Popup */}
         {selectedEvent && (
-          <div className="mt-3 p-3 bg-popover border border-border rounded-lg">
+          <div className="col-span-4 p-2 bg-popover border border-border rounded-lg">
             <div className="text-xs text-popover-foreground">
               {getEventDetails(events.find(e => e.id === selectedEvent)!)}
             </div>
             <button 
-              className="mt-2 text-xs text-primary hover:text-primary/80 transition-colors"
+              className="mt-1 text-xs text-primary hover:text-primary/80 transition-colors"
               onClick={() => setSelectedEvent(null)}
             >
               Close Details
