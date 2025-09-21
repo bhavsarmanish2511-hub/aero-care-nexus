@@ -73,53 +73,55 @@ const Index = () => {
       </header>
 
       {/* Main Dashboard Grid */}
-      <div className="h-[calc(100vh-4rem)] p-2 grid grid-cols-12 grid-rows-4 gap-2 overflow-hidden">
-        {/* Row 1 - Top Components */}
-        <div className="col-span-3 row-span-1">
+      <div className="h-[calc(100vh-4rem)] p-2 grid grid-cols-12 grid-rows-6 gap-2 overflow-hidden">
+        {/* Row 1 - Top Component Pair */}
+        <div className="col-span-6 row-span-1">
           <div onClick={() => setActiveModal('ambulance')} className="cursor-pointer h-full">
             <AmbulanceArrival />
           </div>
         </div>
-        <div className="col-span-3 row-span-1">
+        <div className="col-span-6 row-span-1">
           <div onClick={() => setActiveModal('biometric')} className="cursor-pointer h-full">
             <BiometricScan />
           </div>
         </div>
-        <div className="col-span-3 row-span-1">
+
+        {/* Row 2 - Second Component Pair */}
+        <div className="col-span-6 row-span-1">
           <div onClick={() => setActiveModal('data')} className="cursor-pointer h-full">
             <DataTransmission />
           </div>
         </div>
-        <div className="col-span-3 row-span-1">
+        <div className="col-span-6 row-span-1">
           <div onClick={() => setActiveModal('livefeed')} className="cursor-pointer h-full">
             <LiveFeed />
           </div>
         </div>
 
-        {/* Row 2 - Vitals and Workflow */}
+        {/* Row 3 - Vitals and Third Component Pair */}
         <div className="col-span-6 row-span-1">
           <RealTimeVitals onVitalClick={setSelectedVital} />
         </div>
-        <div className="col-span-3 row-span-1">
+        <div className="col-span-6 row-span-1">
           <div onClick={() => setActiveModal('stabilization')} className="cursor-pointer h-full">
             <PatientStabilization />
           </div>
         </div>
-        <div className="col-span-3 row-span-1">
+
+        {/* Row 4 - Fourth Component Pair */}
+        <div className="col-span-6 row-span-1">
           <div onClick={() => setActiveModal('workflow')} className="cursor-pointer h-full">
             <WorkflowTimeline />
           </div>
         </div>
-
-        {/* Row 3 - Hospital Coordination */}
-        <div className="col-span-12 row-span-1">
+        <div className="col-span-6 row-span-1">
           <div onClick={() => setActiveModal('hospital')} className="cursor-pointer h-full">
             <HospitalCoordination />
           </div>
         </div>
 
-        {/* Row 4 - Timeline */}
-        <div className="col-span-12 row-span-1">
+        {/* Row 5-6 - Timeline (Reduced Size) */}
+        <div className="col-span-12 row-span-2">
           <div onClick={() => setActiveModal('timeline')} className="cursor-pointer h-full">
             <TimelineEvents />
           </div>

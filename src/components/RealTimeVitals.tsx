@@ -57,98 +57,98 @@ export const RealTimeVitals = ({ onVitalClick }: VitalSignsProps) => {
   };
 
   return (
-    <div className="medical-card h-full p-4">
-      <div className="flex items-center gap-2 mb-4">
-        <Activity className="w-5 h-5 text-primary animate-pulse-vital" />
-        <h3 className="text-sm font-medium text-card-foreground">Real-Time Vitals</h3>
+    <div className="medical-card h-full p-2">
+      <div className="flex items-center gap-2 mb-2">
+        <Activity className="w-4 h-4 text-primary animate-pulse-vital" />
+        <h3 className="text-xs font-medium text-card-foreground">Real-Time Vitals</h3>
         <div className="ml-auto flex items-center gap-1 text-xs text-success">
-          <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+          <div className="w-1 h-1 bg-success rounded-full animate-pulse"></div>
           <span>Live</span>
         </div>
       </div>
       
-      <div className="grid grid-cols-3 gap-2 h-[calc(100%-3rem)]">
+      <div className="grid grid-cols-3 gap-1 h-[calc(100%-2rem)]">
         {/* Heart Rate */}
         <div 
-          className={`vital-display p-2 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getStatusColor(vitals.heartRate.status)}`}
+          className={`vital-display p-1 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getStatusColor(vitals.heartRate.status)}`}
           onClick={() => handleVitalClick('Heart Rate', Math.round(vitals.heartRate.value).toString(), 'BPM', vitals.heartRate.status)}
         >
-          <div className="flex items-center gap-1 mb-1">
-            <Heart className="w-3 h-3 animate-pulse-vital" />
+          <div className="flex items-center gap-1 mb-0.5">
+            <Heart className="w-2 h-2 animate-pulse-vital" />
             <span className="text-xs font-medium">HR</span>
           </div>
-          <div className="text-lg font-bold mb-1">
+          <div className="text-sm font-bold mb-0.5">
             {Math.round(vitals.heartRate.value)} <span className="text-xs font-normal">BPM</span>
           </div>
-          <div className="ecg-line opacity-60 h-4"></div>
+          <div className="ecg-line opacity-60 h-2"></div>
         </div>
 
         {/* Blood Pressure */}
         <div 
-          className={`vital-display p-2 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getStatusColor(vitals.bloodPressure.status)}`}
+          className={`vital-display p-1 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getStatusColor(vitals.bloodPressure.status)}`}
           onClick={() => handleVitalClick('Blood Pressure', `${Math.round(vitals.bloodPressure.systolic)}/${Math.round(vitals.bloodPressure.diastolic)}`, 'mmHg', vitals.bloodPressure.status)}
         >
-          <div className="flex items-center gap-1 mb-1">
-            <Activity className="w-3 h-3" />
+          <div className="flex items-center gap-1 mb-0.5">
+            <Activity className="w-2 h-2" />
             <span className="text-xs font-medium">BP</span>
           </div>
-          <div className="text-lg font-bold mb-1">
+          <div className="text-sm font-bold mb-0.5">
             {Math.round(vitals.bloodPressure.systolic)}/{Math.round(vitals.bloodPressure.diastolic)} 
             <span className="text-xs font-normal ml-1">mmHg</span>
           </div>
           <div className="flex items-center gap-1 text-xs">
-            <div className="w-2 h-2 bg-current rounded-full"></div>
+            <div className="w-1 h-1 bg-current rounded-full"></div>
             <span>Stable</span>
           </div>
         </div>
 
         {/* Temperature */}
         <div 
-          className={`vital-display p-2 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getStatusColor(vitals.temperature.status)}`}
+          className={`vital-display p-1 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getStatusColor(vitals.temperature.status)}`}
           onClick={() => handleVitalClick('Temperature', vitals.temperature.value.toFixed(1), '°F', vitals.temperature.status)}
         >
-          <div className="flex items-center gap-1 mb-1">
-            <ThermometerSun className="w-3 h-3" />
+          <div className="flex items-center gap-1 mb-0.5">
+            <ThermometerSun className="w-2 h-2" />
             <span className="text-xs font-medium">Temp</span>
           </div>
-          <div className="text-lg font-bold mb-1">
+          <div className="text-sm font-bold mb-0.5">
             {vitals.temperature.value.toFixed(1)} <span className="text-xs font-normal">°F</span>
           </div>
           <div className="flex items-center gap-1 text-xs">
-            <div className={`w-2 h-2 rounded-full ${vitals.temperature.value > 99 ? 'bg-warning' : 'bg-current'}`}></div>
+            <div className={`w-1 h-1 rounded-full ${vitals.temperature.value > 99 ? 'bg-warning' : 'bg-current'}`}></div>
             <span>Core</span>
           </div>
         </div>
 
         {/* Oxygen Saturation */}
         <div 
-          className={`vital-display p-2 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getStatusColor(vitals.oxygen.status)}`}
+          className={`vital-display p-1 rounded-lg border cursor-pointer transition-all hover:scale-[1.02] ${getStatusColor(vitals.oxygen.status)}`}
           onClick={() => handleVitalClick('Oxygen', Math.round(vitals.oxygen.value).toString(), '%', vitals.oxygen.status)}
         >
-          <div className="flex items-center gap-1 mb-1">
-            <Droplets className="w-3 h-3" />
+          <div className="flex items-center gap-1 mb-0.5">
+            <Droplets className="w-2 h-2" />
             <span className="text-xs font-medium">SpO₂</span>
           </div>
-          <div className="text-lg font-bold mb-1">
+          <div className="text-sm font-bold mb-0.5">
             {Math.round(vitals.oxygen.value)} <span className="text-xs font-normal">%</span>
           </div>
           <div className="flex items-center gap-1 text-xs">
-            <div className="w-2 h-2 bg-current rounded-full animate-pulse"></div>
+            <div className="w-1 h-1 bg-current rounded-full animate-pulse"></div>
             <span>Sat</span>
           </div>
         </div>
 
         {/* Respiratory Rate */}
         <div 
-          className={`vital-display p-2 rounded-lg border cursor-pointer col-span-2 transition-all hover:scale-[1.02] ${getStatusColor(vitals.respiratory.status)}`}
+          className={`vital-display p-1 rounded-lg border cursor-pointer col-span-2 transition-all hover:scale-[1.02] ${getStatusColor(vitals.respiratory.status)}`}
           onClick={() => handleVitalClick('Respiratory Rate', Math.round(vitals.respiratory.value).toString(), '/min', vitals.respiratory.status)}
         >
-          <div className="flex items-center gap-1 mb-1">
-            <Zap className="w-3 h-3" />
+          <div className="flex items-center gap-1 mb-0.5">
+            <Zap className="w-2 h-2" />
             <span className="text-xs font-medium">Respiratory Rate</span>
           </div>
           <div className="flex items-center justify-between">
-            <div className="text-lg font-bold">
+            <div className="text-sm font-bold">
               {Math.round(vitals.respiratory.value)} <span className="text-xs font-normal">/min</span>
             </div>
             <div className="text-xs text-right">
