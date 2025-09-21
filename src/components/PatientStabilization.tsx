@@ -44,7 +44,7 @@ export const PatientStabilization = () => {
         <h3 className="text-sm font-medium text-card-foreground">Patient Stabilization</h3>
       </div>
       
-      <div className="space-y-3 h-[calc(100%-3rem)] overflow-y-auto">
+      <div className="space-y-3 h-[calc(100%-3rem)]">
         {treatments.map((treatment) => {
           const IconComponent = treatment.icon;
           return (

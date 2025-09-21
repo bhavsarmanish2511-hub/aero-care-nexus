@@ -73,7 +73,7 @@ export const DataTransmission = () => {
         </div>
       </div>
       
-      <div className="space-y-3 h-[calc(100%-3rem)] overflow-y-auto">
+      <div className="space-y-2 h-[calc(100%-3rem)]">
         {/* Network Status */}
         <div className="p-2 bg-muted/10 rounded-lg">
           <div className="flex justify-between items-center mb-2">

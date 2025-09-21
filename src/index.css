@@ -28,13 +28,13 @@
     --accent: 142 76% 56%;
     --accent-foreground: 222 84% 4%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 84% 65%;
     --destructive-foreground: 210 40% 98%;
 
-    --warning: 43 96% 56%;
+    --warning: 38 92% 60%;
     --warning-foreground: 222 84% 4%;
 
-    --success: 142 76% 56%;
+    --success: 142 76% 50%;
     --success-foreground: 222 84% 4%;
 
     --border: 222 30% 18%;
@@ -157,9 +157,10 @@
 /* Component Styles */
 @layer components {
   .medical-card {
-    @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg;
-    background: linear-gradient(135deg, hsl(var(--card) / 0.8) 0%, hsl(var(--card) / 0.6) 100%);
-    transition: var(--transition-medical);
+    @apply bg-card/95 backdrop-blur-sm border border-border/50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300;
+    background-image: 
+      linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%),
+      linear-gradient(45deg, hsl(var(--primary) / 0.03) 0%, hsl(var(--accent) / 0.03) 100%);
   }
   
   .medical-card:hover {
@@ -168,9 +169,12 @@
   }
   
   .vital-display {
-    @apply relative overflow-hidden;
-    background: var(--gradient-vital);
-    animation: pulse-vital 2s ease-in-out infinite;
+    background: linear-gradient(135deg, 
+      hsl(var(--card)) 0%, 
+      hsl(var(--muted) / 0.05) 100%
+    );
+    backdrop-filter: blur(8px);
+    border: 1px solid hsl(var(--border) / 0.2);
   }
   
   .vital-display:hover {

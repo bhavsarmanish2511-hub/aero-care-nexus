@@ -1,33 +1,34 @@
 import { useState, useEffect } from "react";
-import { Video, Mic, MicOff, VideoOff, Maximize2, Camera } from "lucide-react";
+import { Video, Mic, MicOff, VideoOff, Maximize2, Camera, Users, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const LiveFeed = () => {
   const [isVideoActive, setIsVideoActive] = useState(true);
   const [isAudioActive, setIsAudioActive] = useState(true);
-  const [feeds, setFeeds] = useState([
-    { id: 1, name: "Ambulance Cam", status: "active", quality: "HD" },
-    { id: 2, name: "Patient Monitor", status: "active", quality: "4K" },
-    { id: 3, name: "External View", status: "inactive", quality: "SD" }
+  const [activeCall, setActiveCall] = useState(true);
+  const [participants, setParticipants] = useState([
+    { id: 1, name: "Dr. Sarah Chen", role: "Ambulance Medic", status: "connected", avatar: "SC" },
+    { id: 2, name: "Dr. Michael Torres", role: "ER Physician", status: "connected", avatar: "MT" },
+    { id: 3, name: "Nurse Jennifer Kim", role: "Trauma Specialist", status: "connecting", avatar: "JK" }
   ]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFeeds(prev => prev.map(feed => ({
-        ...feed,
-        status: Math.random() > 0.1 ? "active" : "inactive"
+      setParticipants(prev => prev.map(participant => ({
+        ...participant,
+        status: participant.status === "connecting" && Math.random() > 0.7 ? "connected" : participant.status
       })));
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="medical-card h-full p-4">
-      <div className="flex items-center justify-between mb-3">
+    <div className="medical-card h-full p-2">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Video className="w-5 h-5 text-primary" />
-          <h3 className="text-sm font-medium text-card-foreground">Live Feed</h3>
+          <Users className="w-4 h-4 text-primary animate-pulse-vital" />
+          <h3 className="text-xs font-medium text-card-foreground">Doctor Communication</h3>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
@@ -35,71 +36,101 @@ export const LiveFeed = () => {
         </div>
       </div>
       
-      <div className="space-y-3 h-[calc(100%-3rem)]">
-        {/* Main Video Feed */}
-        <div className="relative bg-muted/20 rounded-lg h-24 overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-            <Camera className="w-8 h-8 text-primary/60" />
+      <div className="space-y-2 h-[calc(100%-2rem)]">
+        {/* Main Video Conference */}
+        <div className="relative bg-muted/20 rounded-lg h-20 overflow-hidden group">
+          <div className="grid grid-cols-2 h-full gap-1">
+            {/* Ambulance Doctor Feed */}
+            <div className="relative bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center rounded">
+              <div className="text-center">
+                <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-1">
+                  <span className="text-xs font-bold text-primary">SC</span>
+                </div>
+                <div className="text-xs font-medium">Dr. Chen</div>
+                <div className="text-xs text-muted-foreground">Ambulance</div>
+              </div>
+              
+              {/* Video indicator */}
+              <div className="absolute top-1 right-1 flex items-center gap-1">
+                <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            
+            {/* Hospital Doctor Feed */}
+            <div className="relative bg-gradient-to-br from-secondary/20 to-primary/20 flex items-center justify-center rounded">
+              <div className="text-center">
+                <div className="w-6 h-6 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-1">
+                  <span className="text-xs font-bold text-secondary">MT</span>
+                </div>
+                <div className="text-xs font-medium">Dr. Torres</div>
+                <div className="text-xs text-muted-foreground">ER</div>
+              </div>
+              
+              {/* Video indicator */}
+              <div className="absolute top-1 right-1 flex items-center gap-1">
+                <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse"></div>
+              </div>
+            </div>
           </div>
           
-          {/* Video quality indicator */}
-          <div className="absolute top-2 left-2 px-2 py-1 bg-background/80 rounded text-xs font-medium">
-            HD LIVE
-          </div>
-          
-          {/* Recording indicator */}
-          <div className="absolute top-2 right-2 flex items-center gap-1">
-            <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
-            <span className="text-xs text-destructive">REC</span>
+          {/* Patient Vitals Overlay */}
+          <div className="absolute bottom-1 left-1 right-1 bg-background/80 rounded text-xs p-1">
+            <div className="grid grid-cols-3 gap-1 text-center">
+              <div><span className="text-destructive">HR:</span> 72</div>
+              <div><span className="text-warning">BP:</span> 118/78</div>
+              <div><span className="text-success">SpO2:</span> 98%</div>
+            </div>
           </div>
           
           {/* Control overlay */}
-          <div className="absolute bottom-2 left-2 right-2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="flex gap-1">
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="h-6 w-6 p-0 bg-background/80"
-                onClick={() => setIsVideoActive(!isVideoActive)}
-              >
-                {isVideoActive ? <Video className="w-3 h-3" /> : <VideoOff className="w-3 h-3" />}
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="h-6 w-6 p-0 bg-background/80"
-                onClick={() => setIsAudioActive(!isAudioActive)}
-              >
-                {isAudioActive ? <Mic className="w-3 h-3" /> : <MicOff className="w-3 h-3" />}
-              </Button>
-            </div>
-            <Button size="sm" variant="outline" className="h-6 w-6 p-0 bg-background/80">
-              <Maximize2 className="w-3 h-3" />
+          <div className="absolute top-1 left-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="h-5 w-5 p-0 bg-background/80"
+              onClick={() => setIsVideoActive(!isVideoActive)}
+            >
+              {isVideoActive ? <Video className="w-2.5 h-2.5" /> : <VideoOff className="w-2.5 h-2.5" />}
             </Button>
-          </div>
-          
-          {/* Animated scan lines */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="w-full h-0.5 bg-accent/30 absolute animate-scan-line"></div>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="h-5 w-5 p-0 bg-background/80"
+              onClick={() => setIsAudioActive(!isAudioActive)}
+            >
+              {isAudioActive ? <Mic className="w-2.5 h-2.5" /> : <MicOff className="w-2.5 h-2.5" />}
+            </Button>
           </div>
         </div>
         
-        {/* Feed Status List */}
-        <div className="space-y-2">
-          {feeds.map((feed) => (
-            <div key={feed.id} className="flex items-center justify-between p-2 bg-muted/10 rounded">
+        {/* Participants List */}
+        <div className="space-y-1">
+          {participants.map((participant) => (
+            <div key={participant.id} className="flex items-center justify-between p-1.5 bg-muted/10 rounded text-xs">
               <div className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${feed.status === 'active' ? 'bg-success animate-pulse' : 'bg-muted-foreground'}`}></div>
-                <span className="text-xs font-medium">{feed.name}</span>
+                <div className={`w-1.5 h-1.5 rounded-full ${participant.status === 'connected' ? 'bg-success animate-pulse' : 'bg-warning'}`}></div>
+                <span className="font-medium">{participant.name}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">{feed.quality}</span>
-                <div className={`px-1.5 py-0.5 rounded text-xs ${feed.status === 'active' ? 'bg-success/20 text-success' : 'bg-muted text-muted-foreground'}`}>
-                  {feed.status}
-                </div>
+              <div className="flex items-center gap-1">
+                <span className="text-muted-foreground">{participant.role}</span>
+                <Button size="sm" variant="ghost" className="h-4 w-4 p-0">
+                  <Phone className="w-2.5 h-2.5" />
+                </Button>
               </div>
             </div>
           ))}
+        </div>
+        
+        {/* Call Controls */}
+        <div className="flex justify-center gap-2">
+          <Button 
+            size="sm" 
+            variant={activeCall ? "destructive" : "default"} 
+            className="text-xs px-3 py-1"
+            onClick={() => setActiveCall(!activeCall)}
+          >
+            {activeCall ? "End Call" : "Start Call"}
+          </Button>
         </div>
       </div>
     </div>

@@ -59,7 +59,7 @@ export const WorkflowTimeline = () => {
         <h3 className="text-sm font-medium text-card-foreground">Workflow</h3>
       </div>
       
-      <div className="relative h-[calc(100%-3rem)] overflow-y-auto">
+      <div className="relative h-[calc(100%-3rem)]">
         {/* Vertical Timeline Line */}
         <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border"></div>
         

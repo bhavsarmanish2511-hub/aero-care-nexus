@@ -68,7 +68,7 @@ export const HospitalCoordination = () => {
         <h3 className="text-sm font-medium text-card-foreground">Hospital Coordination</h3>
       </div>
       
-      <div className="space-y-3 h-[calc(100%-3rem)] overflow-y-auto">
+      <div className="space-y-2 h-[calc(100%-3rem)]">
         {/* Hospital Connections */}
         <div className="space-y-2">
           {connections.map((hospital) => (
