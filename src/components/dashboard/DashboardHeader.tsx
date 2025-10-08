@@ -41,7 +41,12 @@ export function DashboardHeader({ onNotificationClick }: DashboardHeaderProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="text-left hidden md:block">
-                <p className="text-sm font-medium">{user?.name || 'User'}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium">{user?.name || 'User'}</p>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                    {user?.role === 'business' ? 'Business User' : 'Support Engineer'}
+                  </span>
+                </div>
                 <p className="text-xs text-muted-foreground">{user?.email || ''}</p>
               </div>
             </Button>

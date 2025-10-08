@@ -423,7 +423,7 @@ export function useChatbot() {
           addTicket(newTicket);
           
           // Dispatch notification event for support engineer
-          window.dispatchEvent(new CustomEvent('ticket-created', { 
+          window.dispatchEvent(new CustomEvent('support-ticket-created', { 
             detail: { ticket: newTicket, type: 'ticket' } 
           }));
           

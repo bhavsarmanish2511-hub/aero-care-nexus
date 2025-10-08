@@ -259,8 +259,11 @@ export function NotificationPanel({ onNotificationClick }: NotificationPanelProp
       notifications.map((notification) => (
         <DropdownMenuItem
           key={notification.id}
-          className="flex flex-col items-start gap-1 p-4 cursor-pointer transition-colors group
-            hover:bg-blue-50 focus:bg-blue-50 active:bg-blue-100"
+          className={`flex flex-col items-start gap-1 p-4 cursor-pointer transition-colors group
+            ${!notification.read 
+              ? 'bg-destructive/5 hover:bg-destructive/10 focus:bg-destructive/10' 
+              : 'bg-muted/30 hover:bg-muted/50 focus:bg-muted/50'
+            }`}
           onClick={() => handleNotificationClick(notification)}
         >
           <div className="flex items-start justify-between w-full gap-2">
@@ -268,19 +271,19 @@ export function NotificationPanel({ onNotificationClick }: NotificationPanelProp
               <div className="flex items-center gap-2">
                 <p
                   className={`font-medium text-sm transition-colors
-                    ${!notification.read ? 'text-foreground' : 'text-muted-foreground'}
-                    group-hover:text-black`}
+                    ${!notification.read ? 'text-foreground font-semibold' : 'text-muted-foreground'}
+                    group-hover:text-foreground`}
                 >
                   {notification.title}
                 </p>
                 {!notification.read && (
-                  <div className="h-2 w-2 rounded-full bg-primary" />
+                  <div className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
                 )}
               </div>
-              <p className="text-xs text-muted-foreground mt-1 transition-colors group-hover:text-black">
+              <p className={`text-xs mt-1 transition-colors ${!notification.read ? 'text-foreground' : 'text-muted-foreground'} group-hover:text-foreground`}>
                 {notification.message}
               </p>
-              <p className="text-xs text-muted-foreground mt-2 transition-colors group-hover:text-black">
+              <p className="text-xs text-muted-foreground mt-2 transition-colors group-hover:text-foreground">
                 {notification.timestamp}
               </p>
             </div>
