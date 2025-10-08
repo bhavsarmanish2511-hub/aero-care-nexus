@@ -30,10 +30,10 @@ export function MetricCard({ title, value, change, icon: Icon, color = "text-pri
         <div className="flex items-center gap-1 mt-2">
           {isPositive && <ArrowUp className="h-4 w-4 text-success" />}
           {isNegative && <ArrowDown className="h-4 w-4 text-destructive" />}
-          <span className={`text-sm font-medium ${isPositive ? 'text-success' : isNegative ? 'text-destructive' : 'text-muted-foreground'}`}>
+          {/* <span className={`text-sm font-medium ${isPositive ? 'text-success' : isNegative ? 'text-destructive' : 'text-muted-foreground'}`}>
             {isPositive ? '+' : ''}{change}%
-          </span>
-          <span className="text-sm text-muted-foreground">vs last period</span>
+          </span> */}
+          <span className="text-sm text-muted-foreground"></span>
         </div>
       </CardContent>
     </Card>

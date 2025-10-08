@@ -136,9 +136,9 @@ const Dashboard = () => {
             <FileText className="h-5 w-5 text-primary" />
             Open Service Requests ({openTickets.length})
           </CardTitle>
-          <CardDescription>
+          {/* <CardDescription>
             Service requests created via AI Assistant
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
         <CardContent>
           {openTickets.length === 0 ? (
@@ -196,9 +196,9 @@ const Dashboard = () => {
             <AlertCircle className="h-5 w-5 text-warning" />
             Open Incidents ({openIncidentsData.length})
           </CardTitle>
-          <CardDescription>
+          {/* <CardDescription>
             Incidents linked to your service requests (synced with IT Support Engineer)
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
         <CardContent>
           {openIncidentsData.length === 0 ? (
