@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MetricCard } from '@/components/support/MetricCard';
 import { TicketDetailView } from '@/components/support/TicketDetailView';
 import { IncidentDetailModal } from '@/components/support/IncidentDetailModal';
+import { TicketBreakdownModal } from '@/components/support/TicketBreakdownModal';
 import { mockTickets, Ticket } from '@/data/mockTickets';
 import { useTickets, Incident } from '@/contexts/TicketsContext';
 import { 
@@ -24,6 +25,7 @@ export default function SupportDashboard() {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [breakdownModal, setBreakdownModal] = useState<'open' | 'resolved' | null>(null);
 
   // Date filter state
   const [dateFilter, setDateFilter] = useState<'all' | 'week' | 'month' | 'year' | 'custom'>('all');
@@ -129,10 +131,57 @@ export default function SupportDashboard() {
   // Dummy resolution accuracy
   const resolutionAccuracy = '94%';
 
+  // Calculate breakdown data for Open Tickets
+  const calculateBreakdown = (items: DisplayItem[], isOpen: boolean) => {
+    const relevantItems = items.filter(item => 
+      isOpen 
+        ? (item.status === 'new' || item.status === 'in-progress')
+        : (item.status === 'resolved' || item.status === 'closed')
+    );
+
+    const incidents = relevantItems.filter(item => item.type === 'incident');
+    const serviceRequests = relevantItems.filter(item => item.type === 'ticket' || item.type === 'service-request');
+
+    const countPriorities = (items: DisplayItem[]) => ({
+      critical: items.filter(i => i.priority === 'critical').length,
+      high: items.filter(i => i.priority === 'high').length,
+      medium: items.filter(i => i.priority === 'medium').length,
+      low: items.filter(i => i.priority === 'low').length,
+    });
+
+    return {
+      incidents: {
+        total: incidents.length,
+        priorities: countPriorities(incidents),
+      },
+      serviceRequests: {
+        total: serviceRequests.length,
+        priorities: countPriorities(serviceRequests),
+      },
+    };
+  };
+
+  const openBreakdown = calculateBreakdown(filteredData, true);
+  const resolvedBreakdown = calculateBreakdown(filteredData, false);
+
   // Metrics array using computed values
   const metrics = [
-    { title: 'Open Tickets', value: openTickets.toString(), change: 0, icon: TicketIcon, color: 'text-primary' },
-    { title: 'Tickets Resolved', value: resolvedTickets.toString(), change: 0, icon: CheckCircle, color: 'text-success' },
+    { 
+      title: 'Open Tickets', 
+      value: openTickets.toString(), 
+      change: 0, 
+      icon: TicketIcon, 
+      color: 'text-primary',
+      onClick: () => setBreakdownModal('open')
+    },
+    { 
+      title: 'Tickets Resolved', 
+      value: resolvedTickets.toString(), 
+      change: 0, 
+      icon: CheckCircle, 
+      color: 'text-success',
+      onClick: () => setBreakdownModal('resolved')
+    },
     { title: 'Avg Resolution Time', value: avgResolutionTime, change: 0, icon: Clock, color: 'text-warning' },
     { title: 'Customer Satisfaction', value: customerSatisfaction, change: 0, icon: Star, color: 'text-warning' },
     { title: 'Escalation Rate', value: escalationRate.toFixed(1) + '%', change: 0, icon: TrendingUp, color: 'text-destructive' },
@@ -383,6 +432,20 @@ export default function SupportDashboard() {
         incident={selectedIncident}
         open={!!selectedIncident}
         onClose={() => setSelectedIncident(null)}
+      />
+
+      {/* Ticket Breakdown Modal */}
+      <TicketBreakdownModal
+        open={breakdownModal === 'open'}
+        onClose={() => setBreakdownModal(null)}
+        title="Open Tickets Breakdown"
+        data={openBreakdown}
+      />
+      <TicketBreakdownModal
+        open={breakdownModal === 'resolved'}
+        onClose={() => setBreakdownModal(null)}
+        title="Resolved Tickets Breakdown"
+        data={resolvedBreakdown}
       />
     </div>
   );

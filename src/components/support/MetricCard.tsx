@@ -7,14 +7,18 @@ interface MetricCardProps {
   change: number;
   icon: LucideIcon;
   color?: string;
+  onClick?: () => void;
 }
 
-export function MetricCard({ title, value, change, icon: Icon, color = "text-primary" }: MetricCardProps) {
+export function MetricCard({ title, value, change, icon: Icon, color = "text-primary", onClick }: MetricCardProps) {
   const isPositive = change > 0;
   const isNegative = change < 0;
 
   return (
-    <Card>
+    <Card 
+      className={onClick ? "cursor-pointer hover:shadow-lg transition-shadow" : ""}
+      onClick={onClick}
+    >
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
