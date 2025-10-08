@@ -38,7 +38,10 @@ export default function SupportDashboard() {
 
   // Show notification when new incident arrives
   useEffect(() => {
-    const newIncidents = incidents.filter(inc => inc.status === 'new' || inc.status === 'pending-approval');
+    const newIncidents = incidents.filter(inc => {
+      const status = inc.status.toLowerCase();
+      return status === 'new';
+    });
     if (newIncidents.length > lastIncidentCount) {
       const latestIncident = newIncidents[0];
       toast({
@@ -115,11 +118,20 @@ export default function SupportDashboard() {
   const filteredData = allIncidents.filter(filterByDate);
 
   // Compute metrics from filteredData
-  const openTickets = filteredData.filter(t => t.status === 'new' || t.status === 'in-progress').length;
-  const resolvedTickets = filteredData.filter(t => t.status === 'resolved' || t.status === 'closed').length;
+  const openTickets = filteredData.filter(t => {
+    const status = t.status.toLowerCase();
+    return status === 'new' || status === 'in progress' || status === 'approved' || status === 'on hold';
+  }).length;
+  const resolvedTickets = filteredData.filter(t => {
+    const status = t.status.toLowerCase();
+    return status === 'resolved' || status === 'closed';
+  }).length;
   // Dummy average resolution time (replace with your own logic if needed)
   const avgResolutionTime = (() => {
-    const resolved = filteredData.filter(t => t.status === 'resolved' || t.status === 'closed');
+    const resolved = filteredData.filter(t => {
+      const status = t.status.toLowerCase();
+      return status === 'resolved' || status === 'closed';
+    });
     if (resolved.length === 0) return 'N/A';
     // For demo, assume each resolved ticket took 2.5h
     return (2.5).toFixed(1) + 'h';
@@ -127,17 +139,21 @@ export default function SupportDashboard() {
   // Dummy customer satisfaction
   const customerSatisfaction = '4.8';
   // Escalation rate
-  const escalationRate = filteredData.filter(t => t.status === 'escalated').length / (filteredData.length || 1) * 100;
+  const escalationRate = filteredData.filter(t => {
+    const status = t.status.toLowerCase();
+    return status === 'escalated';
+  }).length / (filteredData.length || 1) * 100;
   // Dummy resolution accuracy
   const resolutionAccuracy = '94%';
 
   // Calculate breakdown data for Open Tickets
   const calculateBreakdown = (items: DisplayItem[], isOpen: boolean) => {
-    const relevantItems = items.filter(item => 
-      isOpen 
-        ? (item.status === 'new' || item.status === 'in-progress')
-        : (item.status === 'resolved' || item.status === 'closed')
-    );
+    const relevantItems = items.filter(item => {
+      const status = item.status.toLowerCase();
+      return isOpen 
+        ? (status === 'new' || status === 'in progress' || status === 'approved' || status === 'on hold')
+        : (status === 'resolved' || status === 'closed');
+    });
 
     const incidents = relevantItems.filter(item => item.type === 'incident');
     const serviceRequests = relevantItems.filter(item => item.type === 'ticket' || item.type === 'service-request');

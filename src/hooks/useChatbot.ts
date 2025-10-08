@@ -105,7 +105,7 @@ export function useChatbot() {
         
         // Close the incident with resolution
         updateIncident(passwordUnlockFlow.incidentId, { 
-          status: "closed",
+          status: "Closed",
           resolvedBy: "AI Assistant",
           resolution: "Account unlocked successfully. User confirmed access restored and able to login."
         });
@@ -159,7 +159,7 @@ export function useChatbot() {
         id: incidentId,
         title: "Password Unlock Request",
         description: `User unable to login - Password unlock request: ${content}`,
-        status: "in-progress",
+        status: "In Progress",
         priority: "medium",
         assignee: "AI Assistant",
         createdBy: "james@fincompany.com",
@@ -282,7 +282,7 @@ export function useChatbot() {
         id: ticketId,
         title: "Payslip Request",
         description: content,
-        status: "open",
+        status: "New",
         priority: "high",
         assignee: "Support Engineer (martha@intelletica.com)",
         created: now,
@@ -312,7 +312,7 @@ export function useChatbot() {
         id: incidentId,
         title: `Sensitive Payslip Access - Linked to ${ticketId}`,
         description: `Incident created for sensitive payslip request: ${content}`,
-        status: "pending-approval",
+        status: "New",
         priority: "critical",
         assignee: "martha@intelletica.com",
         createdBy: "james@fincompany.com",
@@ -406,7 +406,7 @@ export function useChatbot() {
             id: ticketId,
             title: "Financial Report Request - License Charges",
             description: financialReportFlow.reportDetails || content,
-            status: "open",
+            status: "New",
             priority: "high",
             assignee: "Support Engineer (martha@intelletica.com)",
             createdBy: "james@fincompany.com",
@@ -466,7 +466,7 @@ export function useChatbot() {
           ? "Payroll Information Request" 
           : "Application Installation Request",
         description: content,
-        status: "open",
+        status: "New",
         priority: isSensitiveReq ? "high" : "medium",
         assignee: isPayrollRequest 
           ? "Support Engineer (martha@intelletica.com)" 
@@ -510,7 +510,7 @@ export function useChatbot() {
           id: incidentId,
           title: `Sensitive ${isPayrollRequest ? 'Payroll' : 'Data'} Access - Linked to ${ticketId}`,
           description: `Incident created for sensitive request: ${content}`,
-          status: "pending-approval",
+          status: "New",
           priority: "critical",
           assignee: "martha@intelletica.com",
           createdBy: "james@fincompany.com",
@@ -553,7 +553,7 @@ export function useChatbot() {
 
         const updatedTicket = {
           ...newTicket,
-          status: "resolved",
+          status: "Closed",
           updated: new Date().toLocaleString(),
           comments: [
             ...(newTicket.comments || []),
@@ -590,7 +590,7 @@ export function useChatbot() {
         id: ticketId,
         title: "Q4 2024 Expense Summary",
         description: content,
-        status: "completed",
+        status: "Closed",
         priority: "medium",
         assignee: "Finance Team",
         created: now,
@@ -631,7 +631,7 @@ export function useChatbot() {
         data: {
           id: "INC56789",
           title: "Sensitive Payroll Data Access",
-          status: "in-progress",
+          status: "In Progress",
           priority: "critical",
           assignee: "Finance IT Team",
           timeline: [
@@ -655,7 +655,7 @@ export function useChatbot() {
         id: ticketId,
         title: "Database Access Request",
         description: content,
-        status: "pending",
+        status: "New",
         priority: "medium",
         assignee: "IT Support",
         created: now,

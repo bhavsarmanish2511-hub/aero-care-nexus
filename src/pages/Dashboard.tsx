@@ -59,10 +59,22 @@ const Dashboard = () => {
     };
   }, [tickets, incidents]);
   
-  const openTickets = tickets.filter(t => t.status !== "resolved" && t.status !== "closed" && t.status !== "completed");
-  const openIncidentsData = incidents.filter(i => i.status !== "resolved" && i.status !== "closed");
-  const closedTickets = tickets.filter(t => t.status === "resolved" || t.status === "closed" || t.status === "completed");
-  const closedIncidents = incidents.filter(i => i.status === "resolved" || i.status === "closed");
+  const openTickets = tickets.filter(t => {
+    const status = t.status.toLowerCase();
+    return status !== "resolved" && status !== "closed";
+  });
+  const openIncidentsData = incidents.filter(i => {
+    const status = i.status.toLowerCase();
+    return status !== "resolved" && status !== "closed";
+  });
+  const closedTickets = tickets.filter(t => {
+    const status = t.status.toLowerCase();
+    return status === "resolved" || status === "closed";
+  });
+  const closedIncidents = incidents.filter(i => {
+    const status = i.status.toLowerCase();
+    return status === "resolved" || status === "closed";
+  });
   const pastTicketHistory = [
     ...closedTickets.map(t => ({ ...t, type: "Service Request" as const })),
     ...closedIncidents.map(i => ({ ...i, type: "Incident" as const }))
