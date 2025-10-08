@@ -296,6 +296,11 @@ export function useChatbot() {
       };
       addTicket(newTicket);
 
+      // Dispatch notification event for support engineer
+      window.dispatchEvent(new CustomEvent('support-ticket-created', { 
+        detail: { ticket: newTicket, type: 'ticket' } 
+      }));
+
       addMessage({
         role: "assistant",
         content: `Service Request ${ticketId} created successfully.`,
@@ -484,6 +489,11 @@ export function useChatbot() {
       };
       
       addTicket(newTicket);
+      
+      // Dispatch notification event for support engineer
+      window.dispatchEvent(new CustomEvent('support-ticket-created', { 
+        detail: { ticket: newTicket, type: 'ticket' } 
+      }));
       
       addMessage({
         role: "assistant",
