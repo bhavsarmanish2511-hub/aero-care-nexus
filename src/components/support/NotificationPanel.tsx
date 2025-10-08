@@ -78,34 +78,37 @@ export function NotificationPanel({ onNotificationClick }: NotificationPanelProp
   useEffect(() => {
     if (userRole !== 'support') return;
 
-    const handleNewTicket = (event: CustomEvent) => {
-      const { ticket, type } = event.detail;
+  const handleNewTicket = (event: CustomEvent) => {
+    const { ticket, type } = event.detail;
+    
+    // Skip AI-only incidents (like Password Unlock)
+    if (ticket.isAIOnly) return;
+    
+    const notificationId = `${type}-${ticket.id}-${Date.now()}`;
+    const notifiedIncidents = JSON.parse(localStorage.getItem(notifiedIncidentsKey) || '[]');
+    
+    setNotifications(prev => {
+      const priorityText = ticket.priority ? ` | Priority: ${ticket.priority.toUpperCase()}` : '';
+      const categoryText = ticket.category ? ` | Category: ${ticket.category}` : '';
       
-      // Skip AI-only incidents (like Password Unlock)
-      if (ticket.isAIOnly) return;
+      const newNotification: Notification = {
+        id: notificationId,
+        title: type === 'incident' ? 'New Incident Assigned' : 'New Service Request Assigned',
+        message: `${ticket.id}: ${ticket.title}${priorityText}${categoryText} - Assigned by: ${ticket.createdBy || 'Business User'}`,
+        timestamp: new Date().toLocaleString(),
+        read: false,
+        type: 'assignment',
+        ticketId: ticket.id
+      };
       
-      const notificationId = `${type}-${ticket.id}-${Date.now()}`;
-      const notifiedIncidents = JSON.parse(localStorage.getItem(notifiedIncidentsKey) || '[]');
+      if (!notifiedIncidents.includes(ticket.id)) {
+        notifiedIncidents.push(ticket.id);
+        localStorage.setItem(notifiedIncidentsKey, JSON.stringify(notifiedIncidents));
+      }
       
-      setNotifications(prev => {
-        const newNotification: Notification = {
-          id: notificationId,
-          title: type === 'incident' ? 'New Incident Assigned' : 'New Service Request Assigned',
-          message: `${ticket.id}: ${ticket.title} has been assigned to you`,
-          timestamp: new Date().toLocaleString(),
-          read: false,
-          type: 'assignment',
-          ticketId: ticket.id
-        };
-        
-        if (!notifiedIncidents.includes(ticket.id)) {
-          notifiedIncidents.push(ticket.id);
-          localStorage.setItem(notifiedIncidentsKey, JSON.stringify(notifiedIncidents));
-        }
-        
-        return [newNotification, ...prev];
-      });
-    };
+      return [newNotification, ...prev];
+    });
+  };
 
     window.addEventListener('support-ticket-created' as any, handleNewTicket);
     return () => {
