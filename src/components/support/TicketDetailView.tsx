@@ -202,7 +202,90 @@ export function TicketDetailView({ ticket, open, onClose }: TicketDetailViewProp
     });
   };
 
-  const handleSendToUser = () => {
+  // const handleSendToUser = () => {
+  //   if (!resolutionSteps.trim()) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Please save resolution steps before sending to user.",
+  //       variant: "destructive"
+  //     });
+  //     return;
+  //   }
+
+  //   const now = new Date().toLocaleString();
+  //   const updatedWorklog = [
+  //     ...(localTicket.worklog || []),
+  //     {
+  //       timestamp: now,
+  //       action: `Resolution sent to user (${localTicket.createdBy}): Password reset link and instructions provided by SMS`,
+  //       author: 'System'
+  //     },
+  //     {
+  //       timestamp: now,
+  //       action: 'SMS delivered successfully to user with password reset instructions',
+  //       author: 'System'
+  //     }
+  //   ];
+
+  //   setLocalTicket({
+  //     ...localTicket,
+  //     worklog: updatedWorklog,
+  //     status: 'waiting-for-user',
+  //     updated: now
+  //   });
+
+  //   setResolutionSent(true);
+    
+  //   // Dispatch notification event for business user
+  //   window.dispatchEvent(new CustomEvent('support-action', {
+  //     detail: {
+  //       ticketId: localTicket.id,
+  //       action: 'Resolution Sent',
+  //       message: `Password reset instructions sent for ${localTicket.id}`
+  //     }
+  //   }));
+
+  //   toast({
+  //     title: "Resolution Sent",
+  //     description: `Password reset instructions sent to ${localTicket.createdBy}`,
+  //   });
+
+  //   // Simulate user resetting password after 3 seconds
+  //   setTimeout(() => {
+  //     const userActionTime = new Date().toLocaleString();
+  //     const finalWorklog = [
+  //       ...updatedWorklog,
+  //       {
+  //         timestamp: userActionTime,
+  //         action: 'User successfully reset password and logged in',
+  //         author: 'System'
+  //       }
+  //     ];
+
+  //     setLocalTicket(prev => ({
+  //       ...prev,
+  //       worklog: finalWorklog,
+  //       status: 'resolved',
+  //       updated: userActionTime
+  //     }));
+
+  //     // Dispatch notification for ticket resolution
+  //     window.dispatchEvent(new CustomEvent('support-action', {
+  //       detail: {
+  //         ticketId: localTicket.id,
+  //         action: 'Ticket Resolved',
+  //         message: `${localTicket.id}: ${localTicket.title} has been resolved`
+  //       }
+  //     }));
+
+  //     toast({
+  //       title: "User Action Completed",
+  //       description: "User has successfully reset their password.",
+  //     });
+  //   }, 8000);
+  // };
+
+  const handleSendToUser = async () => {
     if (!resolutionSteps.trim()) {
       toast({
         title: "Error",
@@ -211,31 +294,28 @@ export function TicketDetailView({ ticket, open, onClose }: TicketDetailViewProp
       });
       return;
     }
-
+  
     const now = new Date().toLocaleString();
-    const updatedWorklog = [
+  
+    // Step 1: Add the first worklog entry
+    const firstWorklog = [
       ...(localTicket.worklog || []),
       {
         timestamp: now,
-        action: `Resolution sent to user (${localTicket.createdBy}): Password reset link and instructions provided`,
-        author: 'System'
-      },
-      {
-        timestamp: now,
-        action: 'Email delivered successfully to user with password reset instructions',
+        action: `Resolution sent to user (${localTicket.createdBy}): Password reset link and instructions provided over SMS`,
         author: 'System'
       }
     ];
-
+  
     setLocalTicket({
       ...localTicket,
-      worklog: updatedWorklog,
+      worklog: firstWorklog,
       status: 'waiting-for-user',
       updated: now
     });
-
+  
     setResolutionSent(true);
-    
+  
     // Dispatch notification event for business user
     window.dispatchEvent(new CustomEvent('support-action', {
       detail: {
@@ -244,31 +324,50 @@ export function TicketDetailView({ ticket, open, onClose }: TicketDetailViewProp
         message: `Password reset instructions sent for ${localTicket.id}`
       }
     }));
-
+  
     toast({
       title: "Resolution Sent",
       description: `Password reset instructions sent to ${localTicket.createdBy}`,
     });
-
-    // Simulate user resetting password after 3 seconds
+  
+    // Step 2: Wait 4 seconds before adding the "Email delivered" entry
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    const emailDeliveredTime = new Date().toLocaleString();
+  
+    const secondWorklog = [
+      ...firstWorklog,
+      {
+        timestamp: emailDeliveredTime,
+        action: 'Msg delivered successfully to user with password reset instructions',
+        author: 'System'
+      }
+    ];
+  
+    setLocalTicket(prev => ({
+      ...prev,
+      worklog: secondWorklog,
+      updated: emailDeliveredTime
+    }));
+  
+    // Step 3: Simulate user resetting password after 8 seconds from now
     setTimeout(() => {
       const userActionTime = new Date().toLocaleString();
       const finalWorklog = [
-        ...updatedWorklog,
+        ...secondWorklog,
         {
           timestamp: userActionTime,
           action: 'User successfully reset password and logged in',
           author: 'System'
         }
       ];
-
+  
       setLocalTicket(prev => ({
         ...prev,
         worklog: finalWorklog,
         status: 'resolved',
         updated: userActionTime
       }));
-
+  
       // Dispatch notification for ticket resolution
       window.dispatchEvent(new CustomEvent('support-action', {
         detail: {
@@ -277,13 +376,63 @@ export function TicketDetailView({ ticket, open, onClose }: TicketDetailViewProp
           message: `${localTicket.id}: ${localTicket.title} has been resolved`
         }
       }));
-
+  
       toast({
         title: "User Action Completed",
         description: "User has successfully reset their password.",
       });
-    }, 3000);
+    }, 8000); // 8 seconds after the "Email delivered" entry
   };
+
+  // const handleResolveTicket = () => {
+  //   if (!resolutionLink.trim()) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Please provide a resolution link before resolving.",
+  //       variant: "destructive"
+  //     });
+  //     return;
+  //   }
+
+  //   const now = new Date().toLocaleString();
+  //   const updatedTicket = {
+  //     ...localTicket,
+  //     status: "resolved" as const,
+  //     resolution: resolutionLink,
+  //     resolvedBy: "martha@intelletica.com",
+  //     updated: now,
+  //     comments: [
+  //       ...(localTicket.comments || []),
+  //       { 
+  //         author: "Support Engineer", 
+  //         content: `Resolution provided: ${resolutionLink}`,
+  //         timestamp: now 
+  //       }
+  //     ]
+  //   };
+
+  //   setLocalTicket(updatedTicket);
+  //   updateGlobalTicket(localTicket.id, updatedTicket);
+
+  //   // Dispatch notification event for business user
+  //   window.dispatchEvent(new CustomEvent('ticket-resolved', {
+  //     detail: {
+  //       ticketId: localTicket.id,
+  //       ticket: updatedTicket,
+  //       action: 'Ticket Resolved',
+  //       message: `${localTicket.id} has been resolved. Resolution link provided.`
+  //     }
+  //   }));
+
+  //   toast({
+  //     title: "Ticket Resolved",
+  //     description: "Resolution has been sent to the user. They can now close the ticket.",
+  //   });
+
+  //   setTimeout(() => {
+  //     onClose();
+  //   }, 1500);
+  // };
 
   const handleResolveTicket = () => {
     if (!resolutionLink.trim()) {
@@ -294,14 +443,26 @@ export function TicketDetailView({ ticket, open, onClose }: TicketDetailViewProp
       });
       return;
     }
-
+  
     const now = new Date().toLocaleString();
+  
+    // Add a worklog entry for resolution
+    const updatedWorklog = [
+      ...(localTicket.worklog || []),
+      {
+        timestamp: now,
+        action: `Ticket resolved. Resolution link provided: ${resolutionLink}`,
+        author: "Support Engineer"
+      }
+    ];
+  
     const updatedTicket = {
       ...localTicket,
       status: "resolved" as const,
       resolution: resolutionLink,
       resolvedBy: "martha@intelletica.com",
       updated: now,
+      worklog: updatedWorklog,
       comments: [
         ...(localTicket.comments || []),
         { 
@@ -311,10 +472,10 @@ export function TicketDetailView({ ticket, open, onClose }: TicketDetailViewProp
         }
       ]
     };
-
+  
     setLocalTicket(updatedTicket);
     updateGlobalTicket(localTicket.id, updatedTicket);
-
+  
     // Dispatch notification event for business user
     window.dispatchEvent(new CustomEvent('ticket-resolved', {
       detail: {
@@ -324,12 +485,12 @@ export function TicketDetailView({ ticket, open, onClose }: TicketDetailViewProp
         message: `${localTicket.id} has been resolved. Resolution link provided.`
       }
     }));
-
+  
     toast({
       title: "Ticket Resolved",
       description: "Resolution has been sent to the user. They can now close the ticket.",
     });
-
+  
     setTimeout(() => {
       onClose();
     }, 1500);
@@ -757,7 +918,7 @@ export function TicketDetailView({ ticket, open, onClose }: TicketDetailViewProp
           {localTicket.status === 'resolved' && localTicket.category !== "Finance" && (
             <Button className="flex-1" onClick={handleCloseTicket}>
               <CheckCheck className="h-4 w-4 mr-2" />
-              Close Ticket
+              Resolve
             </Button>
           )}
           <Button variant="outline" onClick={onClose}>

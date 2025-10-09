@@ -69,7 +69,7 @@ const thisYear = Array.from({ length: 20 }, (_, i) => {
 export const mockTickets: Ticket[] = [
   {
     id: 'INC325678',
-    title: 'Account Locked - Multiple Incorrect Login Attempts',
+    title: 'Account Locked - Unable to login to a Application',
     description: 'User account has been locked after 3 consecutive failed login attempts. User requires password reset to regain access to their account.',
     status: 'in-progress',
     priority: 'high',
@@ -131,7 +131,7 @@ export const mockTickets: Ticket[] = [
     worklog: [
       {
         timestamp: getDateString(thisWeek[0]),
-        action: 'Incident created - Account locked after 5 failed login attempts',
+        action: 'Incident created - Account locked after 3 failed login attempts',
         author: 'System'
       },
       {

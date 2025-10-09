@@ -5,7 +5,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MetricCard } from '@/components/support/MetricCard';
 import { TicketDetailView } from '@/components/support/TicketDetailView';
 import { IncidentDetailModal } from '@/components/support/IncidentDetailModal';
-import { TicketBreakdownModal } from '@/components/support/TicketBreakdownModal';
 import { mockTickets, Ticket } from '@/data/mockTickets';
 import { useTickets, Incident } from '@/contexts/TicketsContext';
 import { 
@@ -20,6 +19,81 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { addDays, startOfWeek, startOfMonth, startOfYear, isWithinInterval, parseISO } from 'date-fns';
+
+// Enhanced TicketBreakdownModal
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+
+function TicketBreakdownModal({ open, onClose, title, data }) {
+  const priorityColors = {
+    critical: "bg-red-100 text-red-700",
+    high: "bg-orange-100 text-orange-700",
+    medium: "bg-yellow-100 text-yellow-700",
+    low: "bg-green-100 text-green-700",
+  };
+
+  const priorityLabels = {
+    critical: "P1",
+    high: "P2",
+    medium: "P3",
+    low: "P4",
+  };
+
+  const renderBreakdown = (type, icon, breakdown) => {
+    const total = breakdown.total;
+    return (
+      <div className="bg-gray-50 rounded-lg p-4 mb-4 shadow-sm">
+        <div className="flex items-center gap-2 mb-2">
+          {icon}
+          <span className="font-semibold text-lg">{type}</span>
+          <Badge className="bg-blue-100 text-blue-700 ml-2">{total} total</Badge>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
+          {Object.entries(breakdown.priorities).map(([priority, count]) => {
+            const countNum = typeof count === 'number' ? count : Number(count);
+            return (
+              <div key={priority} className="flex flex-col items-center">
+                <Badge className={priorityColors[priority]}>
+                  {priorityLabels[priority] || priority.charAt(0).toUpperCase() + priority.slice(1)}
+                </Badge>
+                <span className="font-bold text-xl mt-1">{countNum}</span>
+                <Progress
+                  value={total ? (countNum / total) * 100 : 0}
+                  className="w-16 h-2 mt-1"
+                />
+                <span className="text-xs text-muted-foreground mt-1">
+                  {total ? ((countNum / total) * 100).toFixed(0) : 0}%
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={isOpen => { if (!isOpen) onClose(); }}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold mb-2">{title}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-6">
+          {renderBreakdown(
+            "Incidents",
+            <AlertCircle className="h-5 w-5 text-red-500" />,
+            data.incidents
+          )}
+          {renderBreakdown(
+            "Service Requests",
+            <TicketIcon className="h-5 w-5 text-blue-500" />,
+            data.serviceRequests
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function SupportDashboard() {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
@@ -75,7 +149,7 @@ export default function SupportDashboard() {
   const allIncidents: DisplayItem[] = [
     ...mockTickets.filter(t => t.type === 'incident') as DisplayItem[],
     ...incidents
-      .filter(inc => !inc.isAIOnly) // Exclude AI-only incidents
+      .filter(inc => !inc.isAIOnly)
       .map(inc => ({
         ...inc,
         type: 'incident' as const,
@@ -126,24 +200,19 @@ export default function SupportDashboard() {
     const status = t.status.toLowerCase();
     return status === 'resolved' || status === 'closed';
   }).length;
-  // Dummy average resolution time (replace with your own logic if needed)
   const avgResolutionTime = (() => {
     const resolved = filteredData.filter(t => {
       const status = t.status.toLowerCase();
       return status === 'resolved' || status === 'closed';
     });
     if (resolved.length === 0) return 'N/A';
-    // For demo, assume each resolved ticket took 2.5h
     return (2.5).toFixed(1) + 'h';
   })();
-  // Dummy customer satisfaction
   const customerSatisfaction = '4.8';
-  // Escalation rate
   const escalationRate = filteredData.filter(t => {
     const status = t.status.toLowerCase();
     return status === 'escalated';
   }).length / (filteredData.length || 1) * 100;
-  // Dummy resolution accuracy
   const resolutionAccuracy = '94%';
 
   // Calculate breakdown data for Open Tickets
@@ -208,18 +277,15 @@ export default function SupportDashboard() {
   const filteredIncidents = filteredData
     .filter(incident => statusFilter === "all" || incident.status === statusFilter)
     .sort((a, b) => {
-      // Parse dates and sort by most recent first
       const dateA = new Date(a.created).getTime();
       const dateB = new Date(b.created).getTime();
-      return dateB - dateA; // Most recent first
+      return dateB - dateA;
     });
 
   const handleTicketClick = (ticket: DisplayItem) => {
     if ('timeline' in ticket && ticket.timeline) {
-      // It's an incident
       setSelectedIncident(ticket as Incident);
     } else {
-      // It's a ticket
       setSelectedTicket(ticket as Ticket);
     }
   };
@@ -233,7 +299,6 @@ export default function SupportDashboard() {
   };
 
   const handleNotificationClick = (ticketId: string) => {
-    // Find incident by ID
     const foundItem = allIncidents.find(t => t.id === ticketId);
     if (foundItem) {
       if ('timeline' in foundItem && foundItem.timeline) {
@@ -244,7 +309,6 @@ export default function SupportDashboard() {
     }
   };
 
-  // Dispatch custom event for notification panel to navigate
   useEffect(() => {
     const handleNotificationClicked = (event: CustomEvent) => {
       handleNotificationClick(event.detail);
@@ -257,22 +321,22 @@ export default function SupportDashboard() {
   }, [allIncidents]);
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'resolved':
-        return 'bg-success/10 text-success';
+        return 'bg-green-100 text-green-700';
+      case 'closed':
+        return 'bg-green-100 text-green-700';
       case 'escalated':
-        return 'bg-destructive/10 text-destructive';
+        return 'bg-red-100 text-red-700';
       case 'in-progress':
-        return 'bg-primary/10 text-primary';
+        return 'bg-blue-100 text-blue-700';
       case 'new':
       case 'pending-approval':
-        return 'bg-warning/10 text-warning';
+        return 'bg-yellow-100 text-yellow-700';
       case 'waiting-for-user':
-        return 'bg-muted/50 text-muted-foreground';
-      case 'closed':
-        return 'bg-success/10 text-success';
+        return 'bg-gray-100 text-gray-700';
       default:
-        return 'bg-muted';
+        return 'bg-gray-100 text-gray-700';
     }
   };
 
@@ -378,54 +442,54 @@ export default function SupportDashboard() {
             {filteredIncidents.map((ticket) => {
               const isIncident = 'timeline' in ticket;
               return (
-              <div
-                key={ticket.id}
-                className={`border border-border rounded-lg p-4 hover:shadow-md transition-all cursor-pointer bg-card`}
-                onClick={() => {
-                  const isIncident = 'timeline' in ticket && ticket.timeline;
-                  if (isIncident) {
-                    handleIncidentClick(ticket);
-                  } else {
-                    handleTicketClick(ticket);
-                  }
-                }}
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant="outline" className="font-mono text-xs">{ticket.id}</Badge>
-                    <Badge className={getStatusColor(ticket.status)}>
-                      {ticket.status.replace("-", " ")}
-                    </Badge>
-                    <Badge className={getPriorityColor(ticket.priority)}>
-                      {ticket.priority}
-                    </Badge>
-                    {ticket.type === 'incident' && (
-                      <Badge variant="outline" className="bg-warning/10 text-warning">
-                        <AlertCircle className="h-3 w-3 mr-1" />
-                        Incident
+                <div
+                  key={ticket.id}
+                  className={`border border-border rounded-lg p-4 hover:shadow-md transition-all cursor-pointer bg-yellow-50`}
+                  onClick={() => {
+                    const isIncident = 'timeline' in ticket && ticket.timeline;
+                    if (isIncident) {
+                      handleIncidentClick(ticket);
+                    } else {
+                      handleTicketClick(ticket);
+                    }
+                  }}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="outline" className="font-mono text-xs">{ticket.id}</Badge>
+                      <Badge className={getStatusColor(ticket.status)}>
+                        {ticket.status.replace("-", " ")}
                       </Badge>
-                    )}
-                    {(ticket.type === 'ticket' || ticket.type === 'service-request') && (
-                      <Badge variant="outline" className="bg-blue-500/10 text-blue-500">
-                        <TicketIcon className="h-3 w-3 mr-1" />
-                        SR Ticket
+                      <Badge className={getPriorityColor(ticket.priority)}>
+                        {ticket.priority}
                       </Badge>
-                    )}
-                    {ticket.createdBy === 'james@fincompany.com' && (
-                      <Badge variant="secondary" className="text-xs">
-                        From Business User
-                      </Badge>
-                    )}
+                      {ticket.type === 'incident' && (
+                        <Badge variant="outline" className="bg-warning/10 text-warning">
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          Incident
+                        </Badge>
+                      )}
+                      {(ticket.type === 'ticket' || ticket.type === 'service-request') && (
+                        <Badge variant="outline" className="bg-blue-500/10 text-blue-500">
+                          <TicketIcon className="h-3 w-3 mr-1" />
+                          SR Ticket
+                        </Badge>
+                      )}
+                      {ticket.createdBy === 'james@fincompany.com' && (
+                        <Badge variant="secondary" className="text-xs">
+                          From Business User
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <h3 className="font-semibold text-foreground mb-1">{ticket.title}</h3>
-                <p className="text-sm text-muted-foreground mb-3">{ticket.description}</p>
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    Updated: {ticket.updated}
-                  </span>
-                  <span>Assignee: {ticket.assignee}</span>
+                  <h3 className="font-semibold text-foreground mb-1">{ticket.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-3">{ticket.description}</p>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      Updated: {ticket.updated}
+                    </span>
+                    <span>Assignee: {ticket.assignee}</span>
                   </div>
                 </div>
               );
