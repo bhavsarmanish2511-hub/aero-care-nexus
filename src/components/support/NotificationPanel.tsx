@@ -31,7 +31,7 @@ export function NotificationPanel({ onNotificationClick }: NotificationPanelProp
     return stored ? JSON.parse(stored) : mockNotifications;
   });
   
-  const { incidents } = useTickets();
+  const { incidents, tickets } = useTickets();
 
   // Check for new incidents on mount for support engineers
   useEffect(() => {
@@ -68,6 +68,42 @@ export function NotificationPanel({ onNotificationClick }: NotificationPanelProp
 
     localStorage.setItem(notifiedIncidentsKey, JSON.stringify(notifiedIncidents));
   }, [incidents, userRole, notifiedIncidentsKey]);
+
+  // Check for new tickets (service requests) on mount for support engineers
+  useEffect(() => {
+    if (userRole !== 'support') return;
+
+    const notifiedIncidents = JSON.parse(localStorage.getItem(notifiedIncidentsKey) || '[]');
+    
+    tickets.forEach(ticket => {
+      if (!notifiedIncidents.includes(ticket.id)) {
+        const notificationId = `ticket-${ticket.id}-${Date.now()}`;
+        
+        setNotifications(prev => {
+          const exists = prev.some(n => n.ticketId === ticket.id && n.type === 'assignment');
+          if (exists) return prev;
+          
+          const priorityText = ticket.priority ? ` | Priority: ${ticket.priority.toUpperCase()}` : '';
+          const categoryText = ticket.category ? ` | Category: ${ticket.category}` : '';
+          
+          const newNotification: Notification = {
+            id: notificationId,
+            title: 'New Service Request Assigned',
+            message: `${ticket.id}: ${ticket.title}${priorityText}${categoryText} - Assigned by: ${ticket.createdBy || 'Business User'}`,
+            timestamp: new Date().toLocaleString(),
+            read: false,
+            type: 'assignment',
+            ticketId: ticket.id
+          };
+          return [newNotification, ...prev];
+        });
+
+        notifiedIncidents.push(ticket.id);
+      }
+    });
+
+    localStorage.setItem(notifiedIncidentsKey, JSON.stringify(notifiedIncidents));
+  }, [tickets, userRole, notifiedIncidentsKey]);
 
   // Persist notifications to localStorage whenever they change
   useEffect(() => {
