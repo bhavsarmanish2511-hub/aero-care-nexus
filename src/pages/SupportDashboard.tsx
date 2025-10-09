@@ -194,7 +194,7 @@ export default function SupportDashboard() {
   // Compute metrics from filteredData
   const openTickets = filteredData.filter(t => {
     const status = t.status.toLowerCase();
-    return status === 'new' || status === 'in progress' || status === 'approved' || status === 'on hold';
+    return status === 'new' || status === 'in-progress' || status === 'pending-approval' || status === 'waiting-for-user' || status === 'escalated';
   }).length;
   const resolvedTickets = filteredData.filter(t => {
     const status = t.status.toLowerCase();
@@ -220,7 +220,7 @@ export default function SupportDashboard() {
     const relevantItems = items.filter(item => {
       const status = item.status.toLowerCase();
       return isOpen 
-        ? (status === 'new' || status === 'in progress' || status === 'approved' || status === 'on hold')
+        ? (status === 'new' || status === 'in-progress' || status === 'pending-approval' || status === 'waiting-for-user' || status === 'escalated')
         : (status === 'resolved' || status === 'closed');
     });
 
